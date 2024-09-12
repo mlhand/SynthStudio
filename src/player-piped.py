@@ -6,4 +6,4 @@ beats = audiogen.util.mixer(
         [(audiogen.util.constant(1), audiogen.util.constant(1)),]
 )
 
-audiogen.sampler.write_wav(sys.stdout, beats)
+audiogen.sampler.write_wav(sys.stdout.buffer, beats, seekable=False)
