@@ -6,8 +6,9 @@ authors = ["Aidan Crawford <crawforda@ufl.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
-audiogen = {git = "https://github.com/casebeer/audiogen.git", rev = "python3"}
+python = "^3.11"
+audiogen = {git = "https://github.com/dstettler/audiogen.git", rev = "python3"}
+pyaudio = "^0.2.14"
 
 
 [build-system]
