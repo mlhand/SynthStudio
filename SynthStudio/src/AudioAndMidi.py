@@ -3,7 +3,7 @@ import time
 from ChordGenerator import ChordGenerator
 import RPi.GPIO as GPIO
 
-device = 0      # output device for 3.5mm once config using alsamixer
+device = 0      # output device for 3.5mm once config using alsamixer, TODO: discuss
 instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
 volume = 127
 wait_time = 3
