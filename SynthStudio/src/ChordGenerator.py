@@ -10,7 +10,7 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
     layout = {} # dict tracking ids and chords
     
     # chord roots to midi value
-    circleOfFifths = {"Db": 61, "Ab": 56, "Eb": 58, "Bb": 65, "F": 60, "C": 67, "G": 62, "D": 62, "A": 57, "E": 64, "B": 59, "F#": 54}
+    circleOfFifths = {"Db": 61, "Ab": 56, "Eb": 63, "Bb": 58, "F": 65, "C": 60, "G": 67, "D": 62, "A": 57, "E": 64, "B": 59, "F#": 54}
 
     def __init__(self, root, tonality, extensions):
         self.root = root
@@ -28,9 +28,9 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
             for i in range(3):
                 chord.append(midiVal + chordArray[i])
 
-            for ocatve in range(1, 3):
+            for octave in range(1, 3):
                 for note in range(3):
-                    strumNotes.append(midiVal + chordArray[note] + 12*ocatve)
+                    strumNotes.append(midiVal + chordArray[note] + 12*octave)
 
             if "7" in self.extensions:
                 chord.append(midiVal + chordArray[3])
