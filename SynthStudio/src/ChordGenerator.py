@@ -1,10 +1,4 @@
-import audiogen
 import pyaudio 
-
-import threading
-import time
-import itertools
-
 import math
 
 class ChordGenerator: # passes back chord with tonality and extension(s) based on button
@@ -19,6 +13,11 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
     circleOfFifths = {"Db": 61, "Ab": 56, "Eb": 58, "Bb": 65, "F": 60, "C": 67, "G": 62, "D": 62, "A": 57, "E": 64, "B": 59, "F#": 54}
 
     def __init__(self, root, tonality, extensions):
+        self.root = root
+        self.tonality = tonality
+        self.extensions = extensions
+    
+    def newChord(self, root, tonality, extensions):
         self.root = root
         self.tonality = tonality
         self.extensions = extensions
@@ -66,40 +65,4 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
 
     def convertMidiToFreq(self, midiVal):
         return math.floor(440 * (2 ** ((midiVal - 69)/12))) #TODO: DISCUSS FLOOR VS CEIL
-
-
-cG = ChordGenerator("Db", "m", ["7", "9"])
-print(cG.getChordAndStrumPadMidi())
-print(cG.getChordAndStrumPadHertz())
-
-# import library 
-import pygame.midi
-import time
-
-device = 0     # device number in win10 laptop
-instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
-volume = 127
-wait_time = 3
-
-pygame.midi.init()
-
-# set the output device
-player = pygame.midi.Output(device)
-
-# set the instrument 
-player.set_instrument(instrument)
-
-# play the notes in chord
-
-for note in cG.getChordAndStrumPadMidi()[0]:
-    player.note_on(note, volume)
-
-time.sleep(wait_time)
-
-for note in cG.getChordAndStrumPadMidi()[0]:
-    player.note_off(note, volume)
-
-# close the device -------------------------------------------------------------
-del player
-pygame.midi.quit()
 
