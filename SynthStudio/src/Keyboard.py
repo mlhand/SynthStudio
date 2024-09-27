@@ -11,7 +11,7 @@ from ChordGenerator import ChordGenerator
 device = 0     # device number in win10 laptop
 instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
 volume = 127
-wait_time = 0.05
+wait_time = .05
 pygame.midi.init()
 player = pygame.midi.Output(device)
 player.set_instrument(instrument)
@@ -24,11 +24,22 @@ minor = False
 seventh = False
 ninth = False
 currentChord = ChordGenerator("C", "M", [])
+notesPlaying = []
 
 def setCurrentRoot(newRoot):
     global currentRoot
     currentRoot = newRoot
     setCurrentChord()
+    playChord()
+
+def playChord():
+    for note in notesPlaying: 
+        player.note_off(note, volume)
+
+    chord = currentChord.getChordAndStrumPadMidi()[0]
+    for note in chord:
+        player.note_on(note, volume)
+        notesPlaying.append(note)
 
 def setCurrentChord():
     global currentChord
