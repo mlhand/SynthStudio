@@ -2,6 +2,7 @@ import pygame.midi
 import time
 from ChordGenerator import ChordGenerator
 import RPi.GPIO as GPIO
+from numpy import interp
 
 device = 0      # output device for 3.5mm once config using alsamixer
 instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
@@ -13,9 +14,11 @@ cG = ChordGenerator("Db", "m", ["7", "9"]) # instantiate chord generator
 pygame.midi.init()
 GPIO.setmode(GPIO.BOARD) # init to use board GPIO numbers for consistency across boards
 
+potPin = 16
 gpioPinChords = [(7, lambda func: chordButtonCallBack("Db")), (11, lambda func: chordButtonCallBack("Ab")),
                  (12, lambda func: tonalityButtonCallBack()),
-                 (13, lambda func: extensionButtonCallBack("7")), (15, lambda func: extensionButtonCallBack("9"))] # used to track gpio pins to their chord
+                 (13, lambda func: extensionButtonCallBack("7")), (15, lambda func: extensionButtonCallBack("9")),
+                 (potPin, lambda func: touchPadCallBack())] # used to track gpio pins to their chord
 
 # set the output device
 player = pygame.midi.Output(device)
@@ -69,6 +72,20 @@ def extensionButtonCallBack(extension):
         extensions.append(extension)
 
     print("New extensions", extensions)
+
+
+def touchPadCallBack():
+    touchPadNotes = cG.getChordAndStrumPadMidi()[1]
+    print(touchPadNotes)
+
+    potValue = GPIO.input(potPin)
+    # map to value beteen 0-7
+    print("potValue", potValue)
+
+    noteIndex = interp(potValue,[0,1023],[0,7])
+    noteIndex = round(noteIndex)
+    print("mapped value", noteIndex)
+    print(touchPadNotes[noteIndex])
 
 
 def exit(player):
