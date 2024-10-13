@@ -25,4 +25,4 @@ def karplusStrongCycle(wavetable, soundlength):
         currentval = currentval + 1
         if currentval >= tablelength:
             currentval = 0
-    return wavetable
+    return fullwavetable
