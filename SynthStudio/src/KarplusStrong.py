@@ -5,6 +5,7 @@ import pygame
 
 def createWavetable(sample_count):
     # To create a sound with a frequency of F, set the sample_count to (sample_rate/F) - 1/2
+    # The default PyGame sample rate is 44100Hz
     high = 1.0
     low = -1.0
     wavetable = []
@@ -28,17 +29,17 @@ def karplusStrongCycle(wavetable, soundlength):
         if currentval >= tablelength:
             currentval = 0
     return fullwavetable
+    
+def createSound(frequency, length = 6):
+    freqlength = length * 44100
+    wavetable = createWavetable(44100//frequency)
+    buffer = np.array(karplusStrongCycle(wavetable, freqlength)).astype(np.float32)
+    sound = pygame.mixer.Sound(buffer)
+    sound.play(0)
+    pygame.time.wait(int(sound.get_length() * 1000)) # Is this necessary?
+    
+    
 
 pygame.mixer.init(size=32, channels=1)
 
-#print(pygame.mixer.get_init())
-#sampleRate = 44100
-#sampling = 4096
-#buffer1 = np.sin(2 * np.pi * np.arange(44100) * 440 / 44100).astype(np.float32)
-
-wavetable = createWavetable(512)
-buffer = np.array(karplusStrongCycle(wavetable, 44000)).astype(np.float32)
-sound = pygame.mixer.Sound(buffer)
-
-sound.play(0)
-pygame.time.wait(int(sound.get_length() * 1000))
+createSound(440)
