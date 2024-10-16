@@ -32,4 +32,11 @@ dwc2
 g_midi
 EOL
 
+source ~/.bashrc
+
+poetry config virtualenvs.in-project true
+
+cd SynthStudio
+poetry update
+
 echo "Reboot to use the device!"
