@@ -4,7 +4,7 @@ FIRMWARE_CONFIG="/boot/firmware/config.txt"
 CMDLINE="/boot/firmware/cmdline.txt"
 MODULES="/etc/modules"
 HOMEDIR=$(eval echo ~$USER)
-BASHRC="~/.bashrc"
+BASHRC="$HOMEDIR/.bashrc"
 
 # Add necessary contents to bashrc
 cat >>$BASHRC << EOL
@@ -27,12 +27,11 @@ sed -i -e 's/otg_mode=1/#otg_mode=1/g' $FIRMWARE_CONFIG
 sed -i 's/$/ modules-load=dwc2,g_midi/' $CMDLINE
 
 cat >>$MODULES << EOL 
-i2c-dev
 dwc2
 g_midi
 EOL
 
-source ~/.bashrc
+source $BASHRC
 
 poetry config virtualenvs.in-project true
 
