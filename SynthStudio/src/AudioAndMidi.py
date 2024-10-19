@@ -67,6 +67,7 @@ def instrumentCallBack(num):
         print(instrument)
         player.set_instrument(instrument)
 
+
 def stopNotesCallBack():
     global notesPlaying
     print("Was playing.")
