@@ -36,7 +36,7 @@ def createSound(frequency, length = 6):
     buffer = np.array(karplusStrongCycle(wavetable, freqlength)).astype(np.float32)
     sound = pygame.mixer.Sound(buffer)
     sound.play(0)
-    pygame.time.wait(int(sound.get_length() * 1000)) # Is this necessary?
+    # pygame.time.wait(int(sound.get_length() * 1000)) # Is this necessary?
     
     
 
