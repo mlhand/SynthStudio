@@ -16,7 +16,8 @@ ssh-keyscan github.com >> $HOMEDIR/.ssh/known_hosts
 echo "Add this pubkey to your GitHub account, and then press enter to continue setup."
 cat $HOMEDIR/.ssh/id_rsa.pub
 read temp
-echo "Done!"
+
+chown $SUDO_USER:$SUDO_USER -R $HOMEDIR/.ssh
 
 # Perform git clone as user
 su $SUDO_USER <<'EOF'
@@ -67,13 +68,17 @@ cd $SYNTH_STUDIO_DIR
 $HOMEDIR/.local/bin/poetry update
 EOF
 
-echo "Updating packages before installing new ones"
+echo "Updating package repo"
 apt update -qq
-apt upgrade -qq
 
-apt install --reinstall alsa-utils alsa-tools
-apt install fluidsynth
+echo "Reinstalling alsa-utils and alsa-tools"
+apt install --reinstall alsa-utils alsa-tools -y -qq
 
+echo "Installing fluidsynth"
+apt install fluidsynth -y -qq
+
+# Creating and installing fluidsynth daemon
+echo "Creating and installing fluidsynth daemon"
 cat >$FLUIDSYNTH_SERVICE << EOL
 [Unit]
 Description=Fluidsynth daemon
