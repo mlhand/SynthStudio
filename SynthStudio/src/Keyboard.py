@@ -1,5 +1,3 @@
-import audiogen
-import pyaudio 
 import threading
 import itertools
 import math
