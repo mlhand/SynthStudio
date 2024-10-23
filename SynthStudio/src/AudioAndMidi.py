@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 from gpiozero import MCP3008 # MUST FOLLOW THIS SET UP https://projects.raspberrypi.org/en/projects/physical-computing/13
 from KarplusStrong import createSound # used when not on midi
 
-device = 0      # output device for 3.5mm once config using alsamixer
+device = 4     # output device for 3.5mm once config using alsamixer
 instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
 volume = 127
 wait_time = 3
@@ -24,8 +24,10 @@ gpioPinChords = [(7, lambda func: chordButtonCallBack("Db")), (8, lambda func: s
 
 # set the output device
 player = pygame.midi.Output(device)
-# set the instrument 
-player.set_instrument(instrument)
+
+# set the instruments
+player.set_instrument(instrument, 0) # chords
+player.set_instrument(instrument + 1, 1) # strum
 
 # states to track
 notesPlaying = [] # used to stop all notes when changing chords
@@ -35,18 +37,18 @@ extensions = [] # added when 7 or 9 is toggeled
 
 def playNotes(notes):
     global notesPlaying
-    for note in notes:
-        player.note_on(note, volume)
-    
-    notesPlaying = notes
+    for note in notes: # play notes from cards
+        player.note_on(note, volume, 0)
+        notesPlaying.append(note) # add to new notes
 
 
 def stopNotes(notes):
     global notesPlaying
-    for note in notes:
-        player.note_off(note, volume)
+    for note in notesPlaying:
+        player.note_off(note, volume, 0)
+        player.note_off(note, volume, 1)
     
-    notesPlaying = []
+    notesPlaying = [] # stop all notes! Including strum
 
 
 # necessary functions for playback
@@ -54,18 +56,28 @@ def stopNotes(notes):
 def instrumentCallBack(num):
     global instrument
     global isMidi
+    
+    instrument += num
+    secondInstrument = instrument + 1
 
-    if(not isMidi):
-        instrument += num
+    # protect against the under and overflow
+    if(instrument > 127):
+        instrument = 0
+    if(instrument < 0):
+        instrument = 127
 
-        # protect against the under and overflow
-        if(instrument > 127):
-            instrument = 0
-        if(instrument < 0):
-            instrument = 127
+    # protect against second instrument overflow 
+    if(secondInstrument > 127):
+        secondInstrument = 0
+    if(secondInstrument < 0):
+        secondInstrument = 127
 
-        print(instrument)
-        player.set_instrument(instrument)
+    print(instrument)
+    player.set_instrument(instrument, 0)
+
+    if (isMidi): # only map second instrument if midi
+        player.set_instrument(secondInstrument, 1) 
+        
 
 
 def stopNotesCallBack():
@@ -111,6 +123,7 @@ def extensionButtonCallBack(extension):
 
 def handleTouchPad(value):
     global isMidi
+    global notesPlaying
 
     print(f"Integer ADC Value: {value}")
     touchPadNotes = cG.getChordAndStrumPadMidi()[1]
@@ -121,7 +134,8 @@ def handleTouchPad(value):
         note = touchPadNotes[value]
 
         if(isMidi):
-            player.note_on(note, volume)
+            player.note_on(note, volume, 1)
+            notesPlaying.append(note)
         else: # play with Karplus strong if not midi, 
             createSound(cG.convertMidiToFreq(note)) # convert to frequency 
 

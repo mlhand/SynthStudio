@@ -1,4 +1,3 @@
-import pyaudio 
 import math
 
 class ChordGenerator: # passes back chord with tonality and extension(s) based on button
