@@ -5,12 +5,13 @@ import RPi.GPIO as GPIO
 from gpiozero import MCP3008 # MUST FOLLOW THIS SET UP https://projects.raspberrypi.org/en/projects/physical-computing/13
 from KarplusStrong import createSound # used when not on midi
 
-device = 4     # output device for 3.5mm once config using alsamixer
+
+device = 4      # 2 if so midi 4 is for direct ouput
 instrument = 24 # http://www.ccarh.org/courses/253/handout/gminstruments/
 volume = 127
 wait_time = 3
 NUM_STRUMPAD_NOTES = 5
-isMidi = False # TODO: FIND HOW TO SET THIS VALUE
+isMidi = True if device == 2 else False # TODO: RECONFIG DEVICE AND isMidi TO A SWITCH ON HARDWARE
 
 # init Chord Generator, pygame, and RPi.GPIO
 cG = ChordGenerator("Db", "m", ["7", "9"]) # instantiate chord generator 
