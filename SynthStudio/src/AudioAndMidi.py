@@ -34,6 +34,7 @@ player.set_instrument(instrument + 1, 1) # strum
 notesPlaying = [] # used to stop all notes when changing chords
 tonality = "M" # toggle change when button is pressed
 extensions = [] # added when 7 or 9 is toggeled
+prevChordPressed = ""
 
 
 def playNotes(notes):
@@ -92,9 +93,15 @@ def stopNotesCallBack():
 
 
 def chordButtonCallBack(chord):
+    global prevChordPressed
 
     # stop all notes playing right now to prevent overlap
-    stopNotes(notesPlaying)
+    stopNotes(notesPlaying) 
+
+    if(prevChordPressed == chord): # pressed successively 
+        cG.flipOctave()
+
+    prevChordPressed = chord
 
     print("Playing", chord, extensions, tonality)
     cG.newChord(chord, tonality, extensions) # construct a new chord

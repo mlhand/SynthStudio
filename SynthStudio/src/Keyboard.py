@@ -26,6 +26,11 @@ notesPlaying = []
 
 def setCurrentRoot(newRoot):
     global currentRoot
+
+    if(currentRoot == newRoot):
+        currentChord.flipOctave()
+        print("Flipping octaves")
+
     currentRoot = newRoot
     setCurrentChord()
     playChord()
@@ -45,13 +50,13 @@ def setCurrentChord():
     if (minor == True):
         tonality = "m"
     if (not seventh and not ninth):
-        currentChord = ChordGenerator(currentRoot, tonality, [])
+        currentChord.newChord(currentRoot, tonality, [])
     elif (seventh and not ninth):
-        currentChord = ChordGenerator(currentRoot, tonality, ["7"])
+        currentChord.newChord(currentRoot, tonality, ["7"])
     elif (not seventh and ninth):
-        currentChord = ChordGenerator(currentRoot, tonality, ["9"])
+        currentChord.newChord(currentRoot, tonality, ["9"])
     else:
-        currentChord = ChordGenerator(currentRoot, tonality, ["7", "9"])
+        currentChord.newChord(currentRoot, tonality, ["7", "9"])
 
 def playNote(noteNum):
     chord = currentChord.getChordAndStrumPadMidi()[0] + currentChord.getChordAndStrumPadMidi()[1]

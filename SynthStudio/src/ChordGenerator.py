@@ -5,6 +5,7 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
     majorChord = [0, 4, 7, 11, 14] 
     minorChord = [0, 3, 7, 10, 14]
     middleC = 60
+    chordLowerOctave = True
 
     layout = {} # dict tracking ids and chords
     
@@ -24,6 +25,7 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
     def buildChord(self, midiVal, chordArray): #returns chord and strumNotes
             chord = []
             strumNotes = []
+            
             for i in range(3):
                 chord.append(midiVal + chordArray[i])
 
@@ -36,7 +38,13 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
 
             if "9" in self.extensions:
                 chord.append(midiVal + chordArray[4])
-            
+
+            if not self.chordLowerOctave:
+                # raise chords by an octave
+                chord = [x+12 for x in chord]
+                # lower strumNotes by an octave
+                strumNotes = [y-12 for y in strumNotes]
+
             return (chord, strumNotes)
 
     def getChordAndStrumPadMidi(self): 
@@ -64,4 +72,7 @@ class ChordGenerator: # passes back chord with tonality and extension(s) based o
 
     def convertMidiToFreq(self, midiVal):
         return math.floor(440 * (2 ** ((midiVal - 69)/12))) #TODO: DISCUSS FLOOR VS CEIL
+
+    def flipOctave(self):
+        self.chordLowerOctave = not self.chordLowerOctave
 
